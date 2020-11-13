@@ -1,1 +1,7 @@
 -e .
+aws-cdk.core
+aws-cdk.aws-events
+aws-cdk.aws-iam
+aws-cdk.aws-lambda
+aws-cdk.aws-stepfunctions
+aws-cdk.aws-stepfunctions-tasks
