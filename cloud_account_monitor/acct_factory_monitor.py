@@ -8,10 +8,8 @@ class AccountFactoryMonitor(core.Construct):
     def __init__(self, scope: core.Construct, id: str, *, polling_delay: int = 5, statemachine_timeout: int= 300,**kwargs):
         super().__init__(scope, id, **kwargs)
 
-        # polling_delay = kwargs.get("wait_timeout", 5)
-        # statemachine_timeout = kwarkwargsgs.get("statemachine_timeout", 300)
-        state_fn = StateHandlerLambda(self, "factory-state-handler")
-        factory_fn = AccountFactoryLambda(self, "account-create-handler")
+        state_fn = StateHandlerLambda(self, "factory-state-handler").function
+        factory_fn = AccountFactoryLambda(self, "account-create-handler").function
 
         creating_state = tasks.LambdaInvoke(
             self,
