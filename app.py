@@ -2,10 +2,10 @@
 
 from aws_cdk import core
 
-from test_step_fns.test_step_fns_stack import TestStepFnsStack
+from cloud_account_monitor.account_provisioning_monitor import AccountProvisioningMonitor
 
 
 app = core.App()
-TestStepFnsStack(app, "test-step-fns")
+AccountProvisioningMonitor(app, "Account-Provisioning-Monitor")
 
 app.synth()

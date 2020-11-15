@@ -1,0 +1,34 @@
+{
+    "ExecutedVersion": "$LATEST", 
+    "Payload": {
+        "uuid": "ajhfaeuiwfoh-18347-afjsljfsad", 
+        "action": "POLL", 
+        "state": "CREATING", 
+        "last_state": ""},
+    "SdkHttpMetadata": {
+         "AllHttpHeaders": {
+             "X-Amz-Executed-Version": ["$LATEST"], 
+             "x-amzn-Remapped-Content-Length": ["0"], 
+             "Connection": ["keep-alive"], 
+             "x-amzn-RequestId": ["ba63233c-59b0-4c75-9c62-28f1bd96f8f2"], 
+             "Content-Length": ["116"], "Date": ["Fri, 13 Nov 2020 23:44:51 GMT"], 
+             "X-Amzn-Trace-Id": ["root=1-5faf1a73-2996747e5b60d6626ee9823e;sampled=0"], 
+             "Content-Type": ["application/json"]
+        }, 
+        "HttpHeaders": {
+            "Connection": "keep-alive", 
+            "Content-Length": "116", 
+            "Content-Type": "application/json", 
+            "Date": "Fri, 13 Nov 2020 23:44:51 GMT", 
+            "X-Amz-Executed-Version": "$LATEST", 
+            "x-amzn-Remapped-Content-Length": "0", 
+            "x-amzn-RequestId": "ba63233c-59b0-4c75-9c62-28f1bd96f8f2", 
+            "X-Amzn-Trace-Id": "root=1-5faf1a73-2996747e5b60d6626ee9823e;sampled=0"
+        }, 
+        "HttpStatusCode": 200
+    }, 
+    "SdkResponseMetadata": {
+        "RequestId": "ba63233c-59b0-4c75-9c62-28f1bd96f8f2"
+    }, 
+    "StatusCode": 200
+}

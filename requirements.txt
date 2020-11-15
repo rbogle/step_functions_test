@@ -1,4 +1,5 @@
 -e .
+boto3
 aws-cdk.core
 aws-cdk.aws-events
 aws-cdk.aws-iam

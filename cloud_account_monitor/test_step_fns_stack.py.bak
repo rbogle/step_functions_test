@@ -1,0 +1,109 @@
+from aws_cdk import core
+from aws_cdk import aws_lambda
+from aws_cdk import aws_events as events
+from aws_cdk import aws_stepfunctions as sfn
+from aws_cdk import aws_stepfunctions_tasks as tasks
+
+class TestStepFnsStack(core.Stack):
+
+    def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
+        super().__init__(scope, construct_id, **kwargs)
+
+        #  State function and task
+        state_fn =  aws_lambda.Function(
+            self, 
+            "state-lambda-stepfunction",
+            runtime=aws_lambda.Runtime.PYTHON_3_7,
+            handler="lambda.state_handler",
+            code=aws_lambda.Code.from_asset("lambdas"),
+            timeout=core.Duration.seconds(30)
+        )
+
+        creating_state = tasks.LambdaInvoke(
+            self,
+            "creating state task",
+            lambda_function = state_fn,
+            output_path="$.Payload"
+        )
+
+        completed_state = tasks.LambdaInvoke(
+            self,
+            "completing state task",
+            lambda_function = state_fn,
+            output_path="$.Payload"
+        )
+
+
+        #  Factory function and task
+        factory_fn =  aws_lambda.Function(
+            self, 
+            "factory-lambda-stepfunction",
+            runtime=aws_lambda.Runtime.PYTHON_3_7,
+            handler="lambda.factory_handler",
+            code=aws_lambda.Code.from_asset("lambdas"),
+            timeout=core.Duration.seconds(30)
+        )
+
+        factory_task = tasks.LambdaInvoke(
+            self,
+            "creating factory task",
+            lambda_function = factory_fn,
+            output_path="$.Payload"
+        )
+
+        polling_task = tasks.LambdaInvoke(
+            self,
+            "polling factory task",
+            lambda_function = factory_fn,
+            output_path="$.Payload"
+        )
+
+        # #  Config function and task
+        # config_fn =  aws_lambda.Function(
+        #     self, 
+        #     "config-lambda-stepfunction",
+        #     runtime=aws_lambda.Runtime.PYTHON_3_7,
+        #     handler="lambda.config_handler",
+        #     code=aws_lambda.Code.from_asset("lambdas"),
+        #     timeout=core.Duration.seconds(30)
+        # )
+
+        # config_task = tasks.LambdaInvoke(
+        #     self,
+        #     "config task",
+        #     lambda_function = config_fn
+        # )
+
+        wait_n = sfn.Wait(
+            self,
+            "Wait N seconds",
+            time=sfn.WaitTime.seconds_path("$.wait_seconds")
+        )
+
+        is_ready = sfn.Choice(
+            self,
+            "Account Ready?",
+        )
+        acct_ready = sfn.Condition.string_equals('$.state', "READY")
+        acct_pending = sfn.Condition.string_equals('$.state', "PENDING")
+
+        
+
+        success = sfn.Succeed(self, "Creation Succeeded")
+        failed = sfn.Fail(
+            self,
+            "Creation Failed",
+            cause="Bad value in Polling loop"
+        )
+
+        is_ready.when(acct_pending, wait_n).when(acct_ready, completed_state.next(success)).otherwise(failed)
+
+        creator_def = factory_task.next(creating_state).next(wait_n).next(polling_task).next(is_ready)
+        
+
+        creator = sfn.StateMachine(
+            self,
+            "creator-statemachine",
+            definition = creator_def,
+            timeout = core.Duration.minutes(5)
+        )
