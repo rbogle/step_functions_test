@@ -60,7 +60,7 @@ class AccountFactoryMonitor(core.Construct):
         # this is the main chain starting with creation request a delay and then polling loop
         creator_chain = factory_task.next(creating_state).next(delay).next(polling_task).next(is_ready)
         
-        creator = sfn.StateMachine(
+        self.state_machine = sfn.StateMachine(
             self,
             "Account-Creation-StateMachine",
             definition = creator_chain,

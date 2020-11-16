@@ -12,18 +12,26 @@ class AccountProvMonitor (core.Construct):
         start_factory_machine = tasks.StepFunctionsStartExecution(
             self, 
             "Account-Factory-StateMachine", 
-            state_machine=factory
+            state_machine=factory.state_machine,
+            integration_pattern=sfn.IntegrationPattern.RUN_JOB,
+            output_path="$.Output"
         )
 
         start_config_machine = tasks.StepFunctionsStartExecution(
             self, 
             "Account-Config-StateMachine", 
-            state_machine=config
+            state_machine=config.state_machine,
+            integration_pattern=sfn.IntegrationPattern.RUN_JOB,
+            output_path="$.Output"
         )        
 
-        def_chain = start_factory_machine.next(start_config_machine)
+        start_task = sfn.Pass(self, "start creation")
+        inter_task = sfn.Pass(self, "start configuration")
+        end_task = sfn.Pass(self, "end provisioning")
 
-        provisioning_machine = sfn.StateMachine(
+        def_chain = start_task.next(start_factory_machine).next(inter_task).next(start_config_machine).next(end_task)
+
+        self.state_machine = sfn.StateMachine(
             self,
             "Account-Provsioning-StateMachine",
             definition = def_chain,

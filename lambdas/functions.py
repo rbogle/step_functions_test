@@ -10,8 +10,8 @@ def state_handler(event, context):
     logger.info("event: %s", event)
     payload = event.get('Payload',event)
     logger.info("payload: %s", payload)
-    state = payload.get('state', "PENDING")
-    lstate = payload.get('last_state', "")
+    state = payload.get('state', None)
+    lstate = payload.get('last_state', None)
     uuid = payload.get("uuid")
     if lstate != state:
         payload['message']=f"State Changed from {lstate} to {state}"
@@ -23,9 +23,9 @@ def factory_handler(event, context):
     logger.info("payload: %s", payload)
     action = payload.get('action', "CREATE")
     uuid = payload.get("uuid")
-    payload['last_state'] = payload.get('state')
+    payload['last_state'] = payload.get('state', None)
     if action == "POLL":
-        payload['polling_attempt']=payload.get("polling_attempt",0)+1
+        payload['create_account_poll']=payload.get("create_account_poll",0)+1
         payload['state'] = random.choices(["PENDING", "READY"], [.9,.1])[0]
     elif action == "CREATE":
         payload['state'] = "CREATING"
@@ -42,7 +42,7 @@ def config_handler(event, context):
     uuid = payload.get("uuid")
     payload['last_state'] = payload.get('state')
     if action == "POLL":
-        payload['polling_attempt']=payload.get("polling_attempt",0)+1
+        payload['config_account_poll']=payload.get("config_account_poll",0)+1
         payload['state']= random.choices(["PENDING", "READY"], [.9,.1])[0]
     elif action == "CONFIG":
         payload['state'] = "CONFIGURING"

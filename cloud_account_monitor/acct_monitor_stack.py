@@ -4,7 +4,7 @@ from .acct_config_monitor import AccountConfigMonitor
 from .acct_prov_monitor import AccountProvMonitor
 
 
-class AccountProvisioningMonitor(core.Stack):
+class AccountMonitorStack(core.Stack):
 
     def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)

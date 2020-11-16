@@ -60,7 +60,7 @@ class AccountConfigMonitor(core.Construct):
         # this is the main chain starting with creation request a delay and then polling loop
         config_chain = config_task.next(config_state).next(delay).next(polling_task).next(is_ready)
         
-        configurator = sfn.StateMachine(
+        self.state_machine = sfn.StateMachine(
             self,
             "Account-Config-StateMachine",
             definition = config_chain,
