@@ -25,8 +25,23 @@ class AccountProvMonitor (core.Construct):
             output_path="$.Output"
         )        
 
-        start_task = sfn.Pass(self, "start creation")
-        inter_task = sfn.Pass(self, "start configuration")
+        start_task = sfn.Pass(
+            self, 
+            "start creation",
+            parameters={
+                "uuid.$":"$.uuid",
+                "action": "CONFIG"
+            }
+        )
+        inter_task = sfn.Pass(
+            self, 
+            "start configuration",
+            parameters={
+                "uuid.$":"$.uuid",
+                "create_account_poll.$":"$.create_account_poll",
+                "action": "CONFIG"
+            }
+        )
         end_task = sfn.Pass(self, "end provisioning")
 
         def_chain = start_task.next(start_factory_machine).next(inter_task).next(start_config_machine).next(end_task)
